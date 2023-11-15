@@ -22,7 +22,7 @@ from xllm.types import RawSample, Batch
 class LastPartCollator(BaseCollator):
 
     def parse_batch(self, raw_batch: List[RawSample]) -> Batch:
-        texts = list()
+        texts = []
 
         for sample in raw_batch:
             item = sample[enums.General.text_parts]
@@ -37,10 +37,8 @@ class LastPartCollator(BaseCollator):
             max_length=self.max_length,
         )
 
-        batch = {
+        return {
             enums.Transformers.input_ids: tokenized.input_ids[:, :-1],
             enums.Transformers.attention_mask: tokenized.attention_mask[:, :-1],
             enums.Transformers.labels: tokenized.input_ids[:, 1:],
         }
-
-        return batch
